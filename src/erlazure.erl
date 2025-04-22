@@ -728,7 +728,7 @@ execute_request(ServiceContext = #service_context{}, ReqContext = #req_context{}
 
         Response = httpc:request(ReqContext#req_context.method,
                                  erlazure_http:create_request(ReqContext, [AuthHeader | Headers1]),
-                                 [{version, "HTTP/1.1"}, {ssl, [{versions, ['tlsv1.2']}]}],
+                                 [{version, "HTTP/1.1"}, {ssl, [{verify, verify_none},{versions, ['tlsv1.2']}]}],
                                  [{sync, true}, {body_format, binary}, {headers_as_is, true}]),
         case Response of
           {ok, {{_, Code, _}, _, Body}}
@@ -790,7 +790,7 @@ get_headers_string(Service, Headers) ->
                 crypto:hmac(sha256, Key, Str).
 -endif
 
--spec sign_string(base64:ascii_string(), string()) -> binary().
+-spec sign_string(Key :: ascii_string(), string()) -> binary().
 sign_string(Key, StringToSign) ->
         hmac(base64:decode(Key), StringToSign).
 
